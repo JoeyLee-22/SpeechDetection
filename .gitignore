@@ -1,6 +1,7 @@
 /audio
 /log
 /test_log
+/examples
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
