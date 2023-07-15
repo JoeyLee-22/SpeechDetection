@@ -1,7 +1,8 @@
 import json
 
-config = {"demo_mode":True,
-          "is_logging":True, 
+config = {"demo_mode":False,
+          "is_logging":True,
+          "log_folder":"logV2",
           "is_graphing":False,
           "sentence_start_sec":10, 
           "sentence_end_sec":14, 
