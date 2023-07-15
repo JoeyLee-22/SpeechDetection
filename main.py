@@ -14,9 +14,10 @@ from datetime import datetime
 
 with open('config.json', 'r') as f:
     config = json.load(f)
+log_folder = config["log_folder"]
 
 if (config["demo_mode"]):
-    a, snr, S1, S1_prime, scores = get_data()
+    a, snr, S1, S1_prime, scores = get_data(log_folder)
     demo_grapher(a, snr, scores)
 else:
     a_start = config["sweep_start"]
@@ -52,7 +53,7 @@ else:
             snr_theory = 'NA'
         if (is_logging):
             date_time = datetime.now().strftime("%m-%d,%H:%M:%S")
-            path = f"log/{date_time},a={a:.2f},SNR={snr}"
+            path = f"{log_folder}/{date_time},a={a:.2f},SNR={snr}"
             os.mkdir(path)
 
         export_wave_file(f"{path}/s_prime.wav", s_prime, sampling_rate)
@@ -70,7 +71,7 @@ else:
         f.close()
         
         print(f'a: {a:.5f}, SNR: {snr}, SNR THEORY: {snr_theory}')
-        if (S1_prime == ''):
+        if (score == 0):
             counter+=1
         else:
             counter=0
@@ -79,5 +80,5 @@ else:
         print(f"Score: {score:.5f}\n")
         
         a += 0.1
-        if (a > a_end or counter==20):
+        if (a > a_end or counter==1):
             break
