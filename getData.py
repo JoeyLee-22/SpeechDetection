@@ -2,9 +2,7 @@ import os
 import numpy as np
 import string
 
-def get_data():
-    directory = 'log'
-
+def get_data(directory):
     file_to_delete = open("data.txt",'w')
     file_to_delete.close()
 
