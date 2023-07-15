@@ -3,6 +3,8 @@
 /logV2
 /test_log
 /examples
+*.json
+*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
