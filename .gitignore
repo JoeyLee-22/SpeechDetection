@@ -1,8 +1,14 @@
 /audio
 /log
 /logV2
+/logV3
+/logV4
+/logV5
+/logV6
+/logV7
+/logV8
 /test_log
-/examples
+test.py
 *.txt
 
 # Byte-compiled / optimized / DLL files
