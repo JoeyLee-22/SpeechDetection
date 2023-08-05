@@ -59,16 +59,17 @@ else:
         export_wave_file(f"{path}/s_prime.wav", s_prime, sampling_rate)
         S1_prime = get_text(speechsdk.audio.AudioConfig(filename=f"{path}/s_prime.wav"))
         score = get_score([S1.lower().translate(str.maketrans('', '', string.punctuation))], [S1_prime.lower().translate(str.maketrans('', '', string.punctuation))])[0]
+        os.remove(f"{path}/s_prime.wav")
         
         export_wave_file(f"{path}/s_norm.wav", s_norm, sampling_rate)
-        export_wave_file(f"{path}/s.wav", s, sampling_rate)
-        export_wave_file(f"{path}/n_norm.wav", n_norm, sampling_rate)
-        export_wave_file(f"{path}/n.wav", n, sampling_rate)
+        # export_wave_file(f"{path}/s.wav", s, sampling_rate)
+        # export_wave_file(f"{path}/n_norm.wav", n_norm, sampling_rate)
+        # export_wave_file(f"{path}/n.wav", n, sampling_rate)
         export_wave_file(f"{path}/a*n_norm.wav", a*n_norm, sampling_rate)
         
-        f = open(f"{path}/results.txt", "w")
-        f.write(f"{a:.5f}\n{snr_full}\n{S1}\n{S1_prime}\n{score}")
-        f.close()
+        # f = open(f"{path}/results.txt", "w")
+        # f.write(f"{a:.5f}\n{snr_full}\n{S1}\n{S1_prime}\n{score}")
+        # f.close()
         
         print(f'a: {a:.5f}, SNR: {snr}, SNR THEORY: {snr_theory}')
         if (score == 0):
@@ -80,5 +81,5 @@ else:
         print(f"Score: {score:.5f}\n")
         
         a += 0.1
-        if (a > a_end or counter==1):
+        if (a > a_end or counter==20):
             break
