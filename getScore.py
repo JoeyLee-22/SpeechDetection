@@ -12,7 +12,7 @@ def get_score(S1, S1_prime):
                 if word_prime in S1[i].split(' '):
                     counter+=1
                 else:
-                    counter+=0.5
+                    counter+=0.75
             scores.append(counter/len(S1[i].split(' ')))
 
     return scores
