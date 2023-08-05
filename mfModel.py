@@ -16,7 +16,7 @@ def compute_mfcc(audio_file, n_mfcc=13, n_fft=2048, hop_length=128):
     return mfccs
 
 def train_model(model_filename):
-    path = "logV8"
+    path = "mfModelTrainingData"
     speech_files = []
     non_speech_files = []
 
