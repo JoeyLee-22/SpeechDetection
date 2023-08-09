@@ -39,6 +39,6 @@ Otherwise the code will either create a new SVM classifer or load an old one and
 
 ### computeMFCC.py
 
-calculates the Mel Frequency Cepstral Coefficients for an audio file. 
+Calculates the Mel Frequency Cepstral Coefficients for an audio file. 
 
 Uses the librosa library to perform the computations.
