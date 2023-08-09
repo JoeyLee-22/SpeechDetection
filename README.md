@@ -3,13 +3,13 @@
 - - -
 ### Config file for the SVM
 
-`model_filename``:
-`audio_filename`:
-`demo_mode`:
-`predict`:
-`train_model`:
-`load_model`:
-`save_model`:
-`n_mfcc`:
-`n_fft`:
-`hop_length`:
+`model_filename`:name of file to save model to or load model from
+`audio_filename`:path to audio file to predict
+`demo_mode`:T/F
+`predict`:T/F
+`train_model`:T/F
+`load_model`:T/F
+`save_model`:T/F
+`n_mfcc`:number of mfcc to compute
+`n_fft`:number of samples in each fourier transform
+`hop_length`:number of samples between successive frames
