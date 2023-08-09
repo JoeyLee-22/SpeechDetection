@@ -35,3 +35,10 @@ When `demo_mode` is true it will only create the demo graph
 
 Otherwise the code will either create a new SVM classifer or load an old one and make a prediction
 
+- - -
+
+### computeMFCC.py
+
+calculates the Mel Frequency Cepstral Coefficients for an audio file. 
+
+Uses the librosa library to perform the computations.
