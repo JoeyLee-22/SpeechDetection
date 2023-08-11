@@ -31,7 +31,7 @@
 
 Uses config file to determine what needs to be done.
 
-When `demo_mode` is true it will only create the demo graph
+When `demo_mode` is true it will only create a demo graph using a saved model
 
 Otherwise the code will either create a new SVM classifer or load an old one and make a prediction
 
