@@ -1,4 +1,3 @@
-import librosa
 import os
 import json
 import joblib
@@ -8,88 +7,102 @@ from math import floor
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from graphs import demo_grapher_mf
+from getData import get_data_mf
+from computeMFCC import compute_mfcc
 
-def compute_mfcc(audio_file, n_mfcc=13, n_fft=2048, hop_length=128):
-    y, sr = librosa.load(audio_file)
-    mel_spec = librosa.feature.melspectrogram(y=y, sr=sr, n_fft=n_fft, hop_length=hop_length)
-    mfccs = librosa.feature.mfcc(S=librosa.power_to_db(mel_spec), n_mfcc=n_mfcc)
-    return mfccs
+with open('config.json', 'r') as f:
+        config = json.load(f)
 
-def train_model(model_filename):
-    path = "mfModelTrainingData"
-    speech_files = []
-    non_speech_files = []
+model_filename = config["model_filename"]
+audio_filename = config["audio_filename"]
+n_mfcc = config["n_mfcc"]
+n_fft = config["n_fft"]
+hop_length = config["hop_length"]
 
-    for subdir, dirs, files in os.walk(path):
-        for file in files:
-            if (file == "s_norm.wav"):
-                speech_files.append(os.path.join(subdir, file))
-            elif (file == "a*n_norm.wav"):
-                non_speech_files.append(os.path.join(subdir, file))
-    speech_features = [compute_mfcc(file) for file in speech_files]
-    non_speech_features = [compute_mfcc(file) for file in non_speech_files]
-
-    speech_features = np.concatenate(speech_features, axis=1).T
-    non_speech_features = np.concatenate(non_speech_features, axis=1).T
-
-    speech_labels = np.ones(len(speech_features))
-    non_speech_labels = np.zeros(len(non_speech_features))
-
-    X = np.vstack((speech_features, non_speech_features))
-    y = np.hstack((speech_labels, non_speech_labels))
-
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    print("TRAINING SVM CLASSIFIER...")
+if (config["demo_mode"] and config["load_model"]):
+    loaded_model = joblib.load(model_filename)
+    
+    print("LOADING DATA...")
     start = time.time()
-    svm_classifier = SVC(kernel='linear')
-    svm_classifier.fit(X_train, y_train)
-    print("SVM CLASSIFIER TRAINING FINISHED")
+    a, snr, S1, S1_prime, scores = get_data_mf("logV7", loaded_model, n_mfcc, n_fft, hop_length)
     total_time = time.time() - start
     hours = floor(total_time/3600)
     minutes = floor((total_time - hours*3600)/60)
     seconds = floor(total_time - hours*3600 - minutes*60)
-    print(f"TRAINING TIME: {hours:02d}:{minutes:02d}:{seconds:02d}")
-
-    predictions = svm_classifier.predict(X_test)
-
-    accuracy = accuracy_score(y_test, predictions)
-    print("\nTEST SET ACCURACY:", accuracy)
-
-    print("\nSAVING MODEL...")
-    joblib.dump(svm_classifier, model_filename)
-    print("MODEL SAVED")
-
-def load_and_predict(model_filename, new_audio_file):
-    loaded_model = joblib.load(model_filename)
-
-    new_features = compute_mfcc(new_audio_file)
-
-    prediction = loaded_model.predict(new_features.T)
+    print(f"DATA LOADED\nTIME TAKEN: {hours:02d}:{minutes:02d}:{seconds:02d}")
     
-    zero_counter = 0
-    for num in prediction:
-        if num == 0:
-            zero_counter+=1
-    
-    print(f"Model Used: {model_filename}")
-    print(f"Audio File: {new_audio_file}")
-    print(f"\nPrediction Length {prediction.size}")
-    print(f"Y Presence Hops: {prediction.size - zero_counter}")
-    print(f"N Presence Hops: {zero_counter}")
-    
-    avg = np.average(prediction)
-    print(f"\nPresence: {avg*100:.3f}%")
+    demo_grapher_mf(a, snr, scores)
 
-if __name__ == "__main__":
-    with open('config.json', 'r') as f:
-        config = json.load(f)
-    
-    model_filename = config["model_filename"]
-    audio_filename = config["audio_filename"]
-    
-    if (config["train"]):
-        train_model(model_filename)
-    
-    if (config["load_and_predict"]):
-        load_and_predict(model_filename, audio_filename)
+else: 
+    if (config["train_model"]):
+        path = "mfModelTrainingData"
+        speech_files = []
+        non_speech_files = []
+
+        for subdir, dirs, files in os.walk(path):
+            for file in files:
+                if (file == "s_norm.wav"):
+                    speech_files.append(os.path.join(subdir, file))
+                elif (file == "a*n_norm.wav"):
+                    non_speech_files.append(os.path.join(subdir, file))
+        speech_features = [compute_mfcc(file, n_mfcc, n_fft, hop_length) for file in speech_files]
+        non_speech_features = [compute_mfcc(file, n_mfcc, n_fft, hop_length) for file in non_speech_files]
+
+        speech_features = np.concatenate(speech_features, axis=1).T
+        non_speech_features = np.concatenate(non_speech_features, axis=1).T
+
+        speech_labels = np.ones(len(speech_features))
+        non_speech_labels = np.zeros(len(non_speech_features))
+
+        X = np.vstack((speech_features, non_speech_features))
+        y = np.hstack((speech_labels, non_speech_labels))
+
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        print(f"MODEL NAME: {model_filename}")
+        print(f"n_mfcc:{n_mfcc}\tn_fft:{n_fft}\thop_length:{hop_length}")
+        print("\nTRAINING SVM CLASSIFIER...")
+        start = time.time()
+        svm_classifier = SVC(kernel='linear')
+        svm_classifier.fit(X_train, y_train)
+        print("SVM CLASSIFIER TRAINING FINISHED")
+        total_time = time.time() - start
+        hours = floor(total_time/3600)
+        minutes = floor((total_time - hours*3600)/60)
+        seconds = floor(total_time - hours*3600 - minutes*60)
+        print(f"TRAINING TIME: {hours:02d}:{minutes:02d}:{seconds:02d}")
+
+        predictions = svm_classifier.predict(X_test)
+
+        accuracy = accuracy_score(y_test, predictions)
+        print("\nTEST SET ACCURACY:", accuracy)
+
+    if (config["train_model"] and config["save_model"]):
+        print("\nSAVING MODEL...")
+        joblib.dump(svm_classifier, model_filename)
+        print("MODEL SAVED\n")
+
+    if (config["predict"]):
+        new_features = compute_mfcc(audio_filename, n_mfcc, n_fft, hop_length)
+        
+        if (config["load_model"]):
+            loaded_model = joblib.load(model_filename)
+            prediction = loaded_model.predict(new_features.T)
+        else:
+            prediction = svm_classifier.predict(new_features.T)
+            
+        zero_counter = 0
+        for num in prediction:
+            if num == 0:
+                zero_counter+=1
+        
+        print(f"Model Used: {model_filename}")
+        print(f"Audio File: {audio_filename}")
+        print(f"\nPrediction Variables\nn_mfcc: {n_mfcc}\nn_fft: {n_fft}\nhop_length: {hop_length}")
+        print(f"\nPrediction Length: {prediction.size}")
+        print(f"Y P/I Hops: {prediction.size - zero_counter}")
+        print(f"N P/I Hops: {zero_counter}")
+        
+        avg = np.average(prediction)
+        print(f"\nP/I: {avg*100:.3f}%")
