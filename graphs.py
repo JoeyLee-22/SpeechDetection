@@ -5,6 +5,18 @@ from scipy.io.wavfile import write
 from scipy.io.wavfile import read
 import azure.cognitiveservices.speech as speechsdk
 
+def demo_grapher_mf(a, snr, scores):
+    alpha = 0.45
+    s = 10
+    
+    plt.scatter(a, scores, color='blue', alpha=alpha, s=s)
+    plt.title("a vs. P/I(%)")
+    plt.xlabel("a")
+    plt.ylabel("P/I(%)")
+    plt.xticks(np.arange(min(a), max(a)+0.5, .5))
+    plt.yticks(np.arange(0,101,5))
+    plt.show()
+
 def demo_grapher(a, snr, scores):
     alpha = 0.45
     s = 10
