@@ -1,18 +1,16 @@
 import json
 
-# config = {"demo_mode":False,
-#           "is_logging":True,
-#           "log_folder":"logV8",
-#           "is_graphing":False,
-#           "sentence_start_sec":9, 
-#           "sentence_end_sec":13, 
-#           "sweep_start":0, 
-#           "sweep_end":10}
-
-config = {"model_filename":"speech_detection_model3.joblib",
-          "audio_filename":"logV7/07-16,17:08:26,a=6.40,SNR=0.02/s_prime.wav",
-          "train":False,
-          "load_and_predict":True}
+config = {"model_filename":"mfModel_1024hop.joblib",
+          "audio_filename":"mfModelTrainingData2/rear_95db_a=9e-05.wav",
+          "demo_mode":True,
+          "predict":True,
+          "train_model":False,
+          "load_model":True,
+          "save_model":False,
+          "n_mfcc":13,
+        #   "n_fft":2048,
+          "n_fft":32768,
+          "hop_length":32}
 
 with open('config.json', 'w') as f:
     json.dump(config, f)
