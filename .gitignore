@@ -7,7 +7,12 @@
 /logV6
 /logV7
 /mfModelTrainingData
+/mfModelTrainingData2
 /test_log
+/differentWhiteNoiseCombined
+/notNecessary
+/whiteNoise
+a=9e-05 rear sample.wav
 test.py
 *.txt
 *.json
