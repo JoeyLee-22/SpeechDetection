@@ -1,1 +1,1 @@
-{"demo_mode": false, "is_logging": true, "log_folder": "logV2", "is_graphing": false, "sentence_start_sec": 10, "sentence_end_sec": 14, "sweep_start": 0, "sweep_end": 10}
+{"model_filename": "mfModel_1024hop.joblib", "audio_filename": "mfModelTrainingData2/rear_95db_a=9e-05.wav", "demo_mode": true, "predict": true, "train_model": false, "load_model": true, "save_model": false, "n_mfcc": 13, "n_fft": 32768, "hop_length": 32}
